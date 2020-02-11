@@ -1,4 +1,6 @@
 import {middlePairs, lowPairs} from './startingActions';
+import {Typography} from '@material-ui/core';
+import React from "react";
 
 /*
 If no one raised before you, you simply raise 4 big blinds + 1 big blind for every player that entered the hand before you.
@@ -24,7 +26,10 @@ You only play AA and KK, two aces and two kings. When you do have a monster,
 your line of play is simple in this scenario: you go all-in.
 */
 export const wasMoreThanOneRaise = 
-hand => hand === 'AA' || hand === 'KK' ? 'All IN' : 'FOLD';
+hand => hand === 'AA' || hand === 'KK' ?
+  <Typography variant="h1" color="textSecondary">ALL IN</Typography> :
+  <Typography variant="h1" color="error">FOLD</Typography>;
+
 
 /*
 What if someone raises after you?
@@ -45,12 +50,12 @@ If you have already entered the hand and one opponent raises after you by the sm
 */
 export const someoneRaisesAfterMe = hand => {
 if (hand === 'AA' || hand === 'KK') {
-    return 'Try and go all in before flop.'
+  return <Typography variant="h4" color="textSecondary">Try and go all in before flop.</Typography>
     }  else if
        (middlePairs.concat(lowPairs).find(h => h === hand)) {
-            return call20;
+            return <Typography style={{paddingLeft: 30, paddingRight: 20}} variant="h4" color="textSecondary">{call20}</Typography>;
         } else {
-            return 'Call if it was mini raise (1xbb), otherwise fold.'
+            return <Typography style={{paddingLeft: 30, paddingRight: 20}} variant="h4" color="textSecondary">Call if it was one big blind raise (mini raise), otherwise fold.</Typography>
         }   
-}
-export const call20 = 'Only call if oponent (and me) has at least 20x raise amount in stack';
+};
+export const call20 = 'Only call if both opponents and my stack has at least 20x raise amount in stack.';

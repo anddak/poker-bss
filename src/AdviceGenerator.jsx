@@ -6,18 +6,35 @@ import { connect } from "react-redux";
 import {RadioButtonGroupField, TextField, FreeTextInput} from './InputFields';
 import {playerPositionList, opponentActionList} from './formOptions';
 import {Button, Stepper, Step, StepLabel, StepContent, Grid, Typography} from '@material-ui/core';
-import {setPosition} from "./redux/actions";
+import {
+  setOpponentAction,
+  setPosition,
+  setStartingCards,
+  setStartingHandType,
+  setNoPlayersEntered,
+  setOpponentRaiseSize,
+  setMoreThanOneRaise,
+  setRaiseAfterMe
+} from "./redux/actions";
 
 
-export const ConnectedPokerContainer = ({generateAction, setPosition, position}) => {
+export const ConnectedAdviceGenerator = ({
+                                          generateAction,
+                                          setPosition,
+                                          position,
+                                          startingCards,
+                                          setStartingCards,
+                                          opponentAction, setOpponentAction,
+                                          startingHandType, setStartingHandType,
+                                          noPlayersEntered, setNoPlayersEntered,
+                                          setOpponentRaiseSize, opponentRaiseSize,
+                                          moreThanOneRaise, setMoreThanOneRaise,
+                                          raiseAfterMe, setRaiseAfterMe
 
-  const [startingCards, setStartingCards] = useState(null);
-  const [opponentAction, setOpponentAction] = useState(null);
-  const [startingHandType, setStartingHandType] = useState(null);
-  const [noPlayersEntered, setNoPlayersEntered] = useState(null);
-  const [opponentRaiseSize, setOpponentRaiseSize] = useState(null);
-  const [moreThanOneRaise, setMoreThanOneRaise] = useState(false);
-  const [raiseAfterMe, setRaiseAfterMe] = useState(false);
+}) => {
+
+
+  // const [raiseAfterMe, setRaiseAfterMe] = useState(false);
   const [fold, setFold] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
 
@@ -43,26 +60,27 @@ export const ConnectedPokerContainer = ({generateAction, setPosition, position})
     setFold(false);
   };
 
-  const handleSubmit = () => {
+  const generateStartingCardType = () => {
 
     Object.entries(hands).forEach(([key, value]) => {
       if (value.find(c => c === startingCards)) {
+        console.log(key);
         setStartingHandType(key);
       } else {
         setStartingHandType('anythingElse');
+        //todo issue is here, keep setting 'anything else' and thats a fold
+        //other todo is beautify the right paper
       }
     })
-
-  }
+  };
 
   const handlePositionChange = value => {
     setPosition(value);
     handleNextStep();
-  }
+  };
 
   const handleStartingCardsChange = value => {
-    setStartingCards(value)
-
+    setStartingCards(value);
   };
 
   const handleOpponentActionChange = value => {
@@ -80,17 +98,13 @@ export const ConnectedPokerContainer = ({generateAction, setPosition, position})
 
   const handleNoPlayersEntered = value => {
     setNoPlayersEntered(value);
-    handleSubmit(value);
   };
 
   return (
 
     <div>
-
         <div>
           <div>
-
-
             <Stepper
               activeStep={activeStep}
               orientation="vertical"
@@ -111,6 +125,7 @@ export const ConnectedPokerContainer = ({generateAction, setPosition, position})
                 <StepContent>
                   <Grid item xs={12} style={{paddingBottom: 15}}>
                     <FreeTextInput
+                      value={startingCards}
                       instrText="Type in your starting cards and click Next."
                       label="ex. AJo"
                       onTextFieldChange={value => handleStartingCardsChange(value)}
@@ -195,9 +210,9 @@ export const ConnectedPokerContainer = ({generateAction, setPosition, position})
             </Stepper>
           </div>
         </div>
-      <Grid container item xs={12} justify="center">
+      <Grid container item xs={12} style={{paddingBottom: 24}}>
         <Button
-          style={{marginRight: 20}}
+          style={{marginRight: 20, marginLeft: 24}}
           color="secondary"
           onClick={() => setRaiseAfterMe(true)}
           variant="contained">
@@ -209,13 +224,21 @@ export const ConnectedPokerContainer = ({generateAction, setPosition, position})
           variant="contained">
           Reset
         </Button>
-        {/*{position && opponentAction && startingHandType && noPlayersEntered &&*/}
-        {/*(<Button style={{marginLeft: 20}}*/}
-        {/*        color="primary"*/}
-        {/*        onClick={() => generateAction(position, opponentAction, startingHandType, noPlayersEntered, opponentRaiseSize, moreThanOneRaise, startingCards)}*/}
-        {/*        variant="contained">*/}
-        {/*  Generate Action*/}
-        {/*</Button>)}*/} //this button might go to top level
+
+
+
+{       position && startingCards && opponentAction && noPlayersEntered &&
+
+        <Button
+          style={{marginLeft: 20}}
+          color="primary"
+          onClick={() => generateStartingCardType()}
+          variant="contained">
+          Generate Advice
+        </Button>
+}
+
+
       </Grid>
     </div>
   )
@@ -223,18 +246,35 @@ export const ConnectedPokerContainer = ({generateAction, setPosition, position})
 
 function mapDispatchToProps(dispatch) {
   return {
-    setPosition: position => dispatch(setPosition(position))
+    setPosition: position => dispatch(setPosition(position)),
+    setStartingCards: startingCards => dispatch(setStartingCards(startingCards)),
+    setOpponentAction: opponentAction => dispatch(setOpponentAction(opponentAction)),
+    setStartingHandType: startingHandType => dispatch(setStartingHandType(startingHandType)),
+    setNoPlayersEntered: noPlayersEntered => dispatch(setNoPlayersEntered(noPlayersEntered)),
+    setOpponentRaiseSize: opponentRaiseSize => dispatch(setOpponentRaiseSize(opponentRaiseSize)),
+    setMoreThanOneRaise: moreThanOneRaise => dispatch(setMoreThanOneRaise(moreThanOneRaise)),
+    setRaiseAfterMe: raiseAfterMe => dispatch(setRaiseAfterMe(raiseAfterMe)),
+
   };
 }
 
 const mapStateToProps = state => {
-  return { position: state.position };
+  return {
+    position: state.position,
+    startingCards: state.startingCards,
+    opponentAction: state.opponentAction,
+    startingHandType: state.startingHandType,
+    noPlayersEntered: state.noPlayersEntered,
+    opponentRaiseSize: state.opponentRaiseSize,
+    moreThanOneRaise: state.moreThanOneRaise,
+    raiseAfterMe: state.raiseAfterMe,
+  };
 };
 
-export const PokerContainer = connect(
+export const AdviceGenerator = connect(
   mapStateToProps,
   mapDispatchToProps
-)(ConnectedPokerContainer);
+)(ConnectedAdviceGenerator);
 
 
 

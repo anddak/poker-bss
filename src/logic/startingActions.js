@@ -18,7 +18,7 @@ export const hands = {
     suitedFaceCards: suitedFaceCards,
     offsuitFaceCards: offsuitFaceCards,
     suitedConnectors: suitedConnectors,
-}
+};
 
 export const startingAction = {
  

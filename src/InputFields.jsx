@@ -21,13 +21,14 @@ export const RadioButtonGroupField = ({ onButtonGroupChange, value, options, ins
             </RadioGroup>
         </>
     )
-}
+};
 
-export const FreeTextInput = ({ instrText, label, onTextFieldChange }) => {
+export const FreeTextInput = ({ value, instrText, label, onTextFieldChange }) => {
     return (
         <>
             <Typography color="error" style={{paddingTop: 5, paddingBottom: 25}}>{instrText}</Typography>
             <TextField
+              value={value}
                 id={label}
                 label={label}
                 variant="outlined"
