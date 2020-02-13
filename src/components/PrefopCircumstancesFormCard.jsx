@@ -1,11 +1,9 @@
 import React, {useState} from 'react';
-import StakeRecommender from './StakeRecommender';
-import {hands, startingAction} from './logic/startingActions';
-import {wasMoreThanOneRaise, someoneRaisesAfterMe} from './logic/staking';
+import {hands} from '../js/startingMove';
 import { connect } from "react-redux";
-import {RadioButtonGroupField, TextField, FreeTextInput} from './InputFields';
-import {playerPositionList, opponentActionList} from './formOptions';
-import {Button, Stepper, Step, StepLabel, StepContent, Grid, Typography} from '@material-ui/core';
+import {RadioButtonGroupField, TextField, FreeTextInput} from './Fields/InputFields';
+import {playerPositionList, opponentActionList} from '../js/constants/formOptions';
+import {Button, Stepper, Step, StepLabel, StepContent, Grid} from '@material-ui/core';
 import {
   setOpponentAction,
   setPosition,
@@ -15,32 +13,34 @@ import {
   setOpponentRaiseSize,
   setMoreThanOneRaise,
   setRaiseAfterMe
-} from "./redux/actions";
+} from "../redux/actions";
 
 
 export const ConnectedAdviceGenerator = ({
-                                          generateAction,
                                           setPosition,
                                           position,
                                           startingCards,
                                           setStartingCards,
                                           opponentAction, setOpponentAction,
-                                          startingHandType, setStartingHandType,
-                                          noPlayersEntered, setNoPlayersEntered,
-                                          setOpponentRaiseSize, opponentRaiseSize,
-                                          moreThanOneRaise, setMoreThanOneRaise,
-                                          raiseAfterMe, setRaiseAfterMe
+                                           setStartingHandType,
+                                          setOpponentRaiseSize,
+                                           setMoreThanOneRaise,
+                                           setRaiseAfterMe,
+  setNoPlayersEntered
 
 }) => {
 
-
-  // const [raiseAfterMe, setRaiseAfterMe] = useState(false);
-  const [fold, setFold] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
 
 
   const handleNextStep = () => {
     setActiveStep(prevActiveStep => prevActiveStep + 1);
+  };
+
+  const handleCardInputNextStep = () => {
+    generateStartingCardType();
+    setActiveStep(prevActiveStep => prevActiveStep + 1);
+
   };
 
   const handleBackStep = () => {
@@ -57,22 +57,21 @@ export const ConnectedAdviceGenerator = ({
     setOpponentRaiseSize(null);
     setMoreThanOneRaise(false);
     setRaiseAfterMe(false);
-    setFold(false);
   };
 
   const generateStartingCardType = () => {
 
-    Object.entries(hands).forEach(([key, value]) => {
+    for (const [key, value] of Object.entries(hands)) {
       if (value.find(c => c === startingCards)) {
-        console.log(key);
         setStartingHandType(key);
+        break;
       } else {
         setStartingHandType('anythingElse');
-        //todo issue is here, keep setting 'anything else' and thats a fold
-        //other todo is beautify the right paper
       }
-    })
+    }
   };
+
+
 
   const handlePositionChange = value => {
     setPosition(value);
@@ -134,7 +133,7 @@ export const ConnectedAdviceGenerator = ({
                   <Button
                     style={{marginRight: 5}}
                     color="primary"
-                    onClick={() => handleNextStep()}
+                    onClick={() => handleCardInputNextStep()}
                     variant="contained">
                     Next
                   </Button>
@@ -160,7 +159,7 @@ export const ConnectedAdviceGenerator = ({
                     <>
                       <Grid container item xs={12} style={{paddingBottom: 10}}>
                         <FreeTextInput
-                          label="Raise amount: ex. 0.24" //exactly one opponent before me
+                          label="Raise amount: ex. 0.24"
                           onTextFieldChange={value => setOpponentRaiseSize(value)}
                         />
                         <Button
@@ -195,7 +194,7 @@ export const ConnectedAdviceGenerator = ({
                 <StepContent>
                   <Grid item xs={12} style={{paddingBottom: 15}}>
                     <FreeTextInput
-                      instrText="The total number of players entered before you."
+                      instrText="The total number of players entered before you. 0 if no one entered, if someone raised that counts as entered as well."
                       onTextFieldChange={value => handleNoPlayersEntered(value)}
                     />
                   </Grid>
@@ -224,21 +223,6 @@ export const ConnectedAdviceGenerator = ({
           variant="contained">
           Reset
         </Button>
-
-
-
-{       position && startingCards && opponentAction && noPlayersEntered &&
-
-        <Button
-          style={{marginLeft: 20}}
-          color="primary"
-          onClick={() => generateStartingCardType()}
-          variant="contained">
-          Generate Advice
-        </Button>
-}
-
-
       </Grid>
     </div>
   )
@@ -271,7 +255,7 @@ const mapStateToProps = state => {
   };
 };
 
-export const AdviceGenerator = connect(
+export const PrefopCircumstancesFormCard = connect(
   mapStateToProps,
   mapDispatchToProps
 )(ConnectedAdviceGenerator);

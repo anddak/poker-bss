@@ -1,43 +1,39 @@
-import React, {useState} from 'react';
-import {AdviceGenerator} from "./AdviceGenerator";
-import {Button, Grid, Paper, Typography} from '@material-ui/core';
-import StakeRecommender from "./StakeRecommender";
-import {startingAction} from "./logic/startingActions";
-import {someoneRaisesAfterMe, wasMoreThanOneRaise} from "./logic/staking";
+import React from 'react';
+import {PrefopCircumstancesFormCard} from "./PrefopCircumstancesFormCard";
+import {Grid, Paper} from '@material-ui/core';
+import PreflopAdvice from "./PreflopAdviceCard";
+import {startingAction} from "../js/startingMove";
 import {connect} from "react-redux";
-import { sizing } from '@material-ui/system';
 
 
 export const ConnectedContainer = ({position, opponentAction, startingHandType, noPlayersEntered, opponentRaiseSize, moreThanOneRaise, startingCards, raiseAfterMe}) => {
+
+
 
   return (
     <div>
       <Grid container spacing={2} justify="center" style={{paddingTop: 35}}>
         <Grid item xs={4} style={{borderRight: 15, borderRightColor: 'gray'}}>
           <Paper style={{height: '100%', width: '100%'}} elevation={5}>
-            <AdviceGenerator/>
+            <PrefopCircumstancesFormCard/>
           </Paper>
         </Grid>
         <Grid container item xs={4} justify="center" alignContent="center">
-          <Paper style={{height: '100%', width: '100%'}} elevation={5}>
+          <Paper style={{height: '100%', width: '100%', textAlign: "center", display: "flex", flexDirection: "column", justifyContent: "center"}} elevation={5}>
 
+            {position && startingHandType && opponentAction &&
 
-
-            {position && opponentAction && startingHandType && noPlayersEntered && !moreThanOneRaise ?
-
-            <StakeRecommender
+            <PreflopAdvice
+              position={position}
               actionRecommendation={startingAction[position][startingHandType][opponentAction]}
               noPlayersEntered={noPlayersEntered}
               opponentRaise={opponentRaiseSize}
-            /> : <Typography variant="h4" color="textSecondary">Fill in the form to get advice.</Typography>
-            }
+              moreThanOneRaise={moreThanOneRaise}
+              raiseAfterMe={raiseAfterMe}
+              startingCards={startingCards}
+              opponentAction={opponentAction}
+            />
 
-            {
-              moreThanOneRaise && wasMoreThanOneRaise(startingCards)
-            }
-
-            {
-              raiseAfterMe && someoneRaisesAfterMe(startingCards)
             }
 
           </Paper>

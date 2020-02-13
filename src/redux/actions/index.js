@@ -9,7 +9,7 @@ import {
   SET_RAISE_AFTER_ME,
   SET_FOLD,
   SET_ACTIVE_STEP
-} from "../../constants";
+} from "../../js/constants/constants";
 
 export function setPosition(payload) {
   return { type: SET_POSITION, payload };

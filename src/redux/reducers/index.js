@@ -5,7 +5,7 @@ import {
   SET_POSITION, SET_RAISE_AFTER_ME,
   SET_STARTING_CARDS,
   SET_STARTING_HAND_TYPE
-} from "../../constants";
+} from "../../js/constants/constants";
 
 const initialState = {
   position: null,

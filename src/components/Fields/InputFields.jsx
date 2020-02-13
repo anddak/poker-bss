@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Typography, Radio, RadioGroup, FormLabel, FormControlLabel, TextField } from '@material-ui/core';
+import React from 'react'
+import { Typography, Radio, RadioGroup, FormControlLabel, TextField } from '@material-ui/core';
 
 export const RadioButtonGroupField = ({ onButtonGroupChange, value, options, instrText }) => {
 
